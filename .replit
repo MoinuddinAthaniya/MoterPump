@@ -1,0 +1,57 @@
+modules = ["dotnet"]
+
+[nix]
+channel = "stable-24_05"
+packages = ["dotnet-sdk"]
+
+[workflows]
+runButton = "Run Motor Pump Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Motor Pump Management Server"
+
+[[workflows.workflow]]
+name = "Motor Pump Management Server"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd MotorPumpProject && dotnet run"
+waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Run Project"
+author = 41768824
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd MotorPumpProject && dotnet run"
+
+[[workflows.workflow]]
+name = "Run Motor Pump Project"
+author = 41768824
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd MotorPumpProject && dotnet run"
+
+[deployment]
+run = ["sh", "-c", "cd MotorPumpProject && dotnet run"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
